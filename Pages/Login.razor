@@ -1,0 +1,40 @@
+﻿@page "/"
+@using BlazorAuthApp.Data.Repositories
+@inject IUserService userService
+@inject NavigationManager Nav
+
+<h3>Login</h3>
+
+<div class="mb-3">
+    <label for="loginUsername" class="form-label">Username</label>
+    <input type="text" class="form-control" id="loginUsername" placeholder="John Kend" autocomplete="off" required @bind-value="userName" />
+</div>
+<div class="mb-3">
+    <label for="loginPassword" class="form-label">Password</label>
+    <input type="password" class="form-control" id="loginPassword" placeholder="****" required @bind-value="password" />
+</div>
+<div class="mb-3">
+    <button type="button" class="btn btn-primary" @onclick="Signin">Login</button>
+</div>
+@if (failure)
+{
+    <p class="text-danger">Username or password are incorrect</p>
+}
+
+@code {
+    private string? userName, password;
+    private bool failure = false;
+
+    private async Task Signin()
+    {
+        var user = await userService.GetUserAsync(userName, password);
+        if (user != null)
+        {
+            Nav.NavigateTo("/index");
+        }
+        else
+        {
+            failure = true;
+        }
+    }
+}
